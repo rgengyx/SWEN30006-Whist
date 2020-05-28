@@ -2,10 +2,12 @@
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.CardAdapter;
@@ -34,16 +36,16 @@ public class Whist extends CardGame {
 
 	final String trumpImage[] = { "bigspade.gif", "bigheart.gif", "bigdiamond.gif", "bigclub.gif" };
 
-	static final Random random = ThreadLocalRandom.current();
+	private final Random random;
 
 	// return random Enum value
-	public static <T extends Enum<?>> T randomEnum(Class<T> clazz) {
+	public <T extends Enum<?>> T randomEnum(Class<T> clazz) {
 		int x = random.nextInt(clazz.getEnumConstants().length);
 		return clazz.getEnumConstants()[x];
 	}
 
 	// return random Card from ArrayList
-	public static Card randomCard(ArrayList<Card> list) {
+	public Card randomCard(ArrayList<Card> list) {
 		int x = random.nextInt(list.size());
 		return list.get(x);
 	}
@@ -54,8 +56,8 @@ public class Whist extends CardGame {
 
 	private final String version = "1.0";
 	public final int nbPlayers = 4;
-	public final int nbStartCards = 13;
-	public final int winningScore = 11;
+	public static int nbStartCards = 13;
+	public static int winningScore = 11;
 	private final int handWidth = 400;
 	private final int trickWidth = 40;
 	private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
@@ -73,9 +75,7 @@ public class Whist extends CardGame {
 	private boolean enforceRules = false;
 
 	// New code
-	IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
-	private Player[] players = { new Player(randomStrategy), new Player(randomStrategy), new Player(randomStrategy),
-			new Player(randomStrategy) };
+	private Player[] players = new Player[4];
 
 	public void setStatus(String string) {
 		setStatusText(string);
@@ -156,7 +156,6 @@ public class Whist extends CardGame {
 			} else {
 				setStatusText("Player " + nextPlayer + " thinking...");
 				delay(thinkingTime);
-//				selected = randomCard(hands[nextPlayer]);
 				selected = players[nextPlayer].playTrick();
 			}
 			// Lead with selected card
@@ -229,8 +228,27 @@ public class Whist extends CardGame {
 		return Optional.empty();
 	}
 
-	public Whist() {
+	public Whist(Properties properties) {
+
 		super(700, 700, 30);
+
+		// New code
+		long seedProp = Long.parseLong(properties.getProperty("Seed"));
+		random = new Random(seedProp);
+		nbStartCards = Integer.parseInt(properties.getProperty("nbStartCards"));
+		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
+		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
+
+		if (properties.getProperty("name").equals("original")) {
+
+			IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
+			players[0] = new Player(randomStrategy);
+			players[1] = new Player(randomStrategy);
+			players[2] = new Player(randomStrategy);
+			players[3] = new Player(randomStrategy);
+
+		}
+
 		setTitle("Whist (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
 		setStatusText("Initializing...");
 		initScore();
@@ -244,9 +262,23 @@ public class Whist extends CardGame {
 		refresh();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+
+		Properties whistProperties = new Properties();
+
+		// Read properties
+		FileReader inStream = null;
+		try {
+			inStream = new FileReader("original.properties");
+			whistProperties.load(inStream);
+		} finally {
+			if (inStream != null) {
+				inStream.close();
+			}
+		}
+
 		// System.out.println("Working Directory = " + System.getProperty("user.dir"));
-		new Whist();
+		new Whist(whistProperties);
 	}
 
 }
