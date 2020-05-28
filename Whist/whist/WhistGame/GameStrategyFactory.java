@@ -1,7 +1,7 @@
+package WhistGame;
 
 public class GameStrategyFactory {
 	private static GameStrategyFactory instance;
-	private IGameStrategy randomStrategy;
 
 	public static GameStrategyFactory getInstance() {
 		if (instance == null) {
