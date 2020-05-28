@@ -249,6 +249,13 @@ public class Whist extends CardGame {
 			players[2] = new Player(randomStrategy);
 			players[3] = new Player(randomStrategy);
 
+		} else if (properties.getProperty("name").equals("legal")) {
+
+			IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
+			players[0] = new Player(legalStrategy);
+			players[1] = new Player(legalStrategy);
+			players[2] = new Player(legalStrategy);
+			players[3] = new Player(legalStrategy);
 		}
 
 		setTitle("Whist (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");

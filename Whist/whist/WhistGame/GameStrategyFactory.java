@@ -13,4 +13,9 @@ public class GameStrategyFactory {
 	public IGameStrategy getRandomStrategy() {
 		return (IGameStrategy) new RandomStrategy();
 	}
+
+	public IGameStrategy getLegalStrategy() {
+		return (IGameStrategy) new LegalStrategy();
+	}
+
 }
