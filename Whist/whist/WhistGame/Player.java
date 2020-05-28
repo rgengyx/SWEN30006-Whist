@@ -1,3 +1,5 @@
+package WhistGame;
+import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 
@@ -26,9 +28,13 @@ public class Player {
 	public void setInteractive(boolean isInteractive) {
 		this.isInteractive = isInteractive;
 	}
+	
+	public Card playLeadingCard() {
+		return gameStrategy.playLeadingCard(this);
+	}
 
-	public Card playTrick() {
-		return gameStrategy.playTrick(this);
+	public Card playTrick(Suit lead) {
+		return gameStrategy.playTrick(this, lead);
 	}
 
 }

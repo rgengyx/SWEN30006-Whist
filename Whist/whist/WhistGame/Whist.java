@@ -1,3 +1,4 @@
+package WhistGame;
 // Whist.java
 
 import java.awt.Color;
@@ -157,7 +158,7 @@ public class Whist extends CardGame {
 				setStatusText("Player " + nextPlayer + " thinking...");
 				delay(thinkingTime);
 //				selected = randomCard(hands[nextPlayer]);
-				selected = players[nextPlayer].playTrick();
+				selected = players[nextPlayer].playLeadingCard();
 			}
 			// Lead with selected card
 			trick.setView(this, new RowLayout(trickLocation, (trick.getNumberOfCards() + 2) * trickWidth));
@@ -181,7 +182,7 @@ public class Whist extends CardGame {
 				} else {
 					setStatusText("Player " + nextPlayer + " thinking...");
 					delay(thinkingTime);
-					selected = players[nextPlayer].playTrick();
+					selected = players[nextPlayer].playTrick(lead);
 				}
 				// Follow with selected card
 				trick.setView(this, new RowLayout(trickLocation, (trick.getNumberOfCards() + 2) * trickWidth));
