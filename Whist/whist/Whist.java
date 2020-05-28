@@ -42,12 +42,6 @@ public class Whist extends CardGame {
 		return clazz.getEnumConstants()[x];
 	}
 
-	// return random Card from Hand
-	public static Card randomCard(Hand hand) {
-		int x = random.nextInt(hand.getNumberOfCards());
-		return hand.get(x);
-	}
-
 	// return random Card from ArrayList
 	public static Card randomCard(ArrayList<Card> list) {
 		int x = random.nextInt(list.size());
@@ -78,6 +72,11 @@ public class Whist extends CardGame {
 	private Location trumpsActorLocation = new Location(50, 50);
 	private boolean enforceRules = false;
 
+	// New code
+	IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
+	private Player[] players = { new Player(randomStrategy), new Player(randomStrategy), new Player(randomStrategy),
+			new Player(randomStrategy) };
+
 	public void setStatus(String string) {
 		setStatusText(string);
 	}
@@ -106,16 +105,19 @@ public class Whist extends CardGame {
 		hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
 		for (int i = 0; i < nbPlayers; i++) {
 			hands[i].sort(Hand.SortType.SUITPRIORITY, true);
+			players[i].setHand(hands[i]);
 		}
+
 		// Set up human player for interaction
 		CardListener cardListener = new CardAdapter() // Human Player plays card
 		{
 			public void leftDoubleClicked(Card card) {
 				selected = card;
-				hands[0].setTouchEnabled(false);
+				players[0].getHand().setTouchEnabled(false);
 			}
 		};
-		hands[0].addCardListener(cardListener);
+		players[0].getHand().addCardListener(cardListener);
+
 		// graphics
 		RowLayout[] layouts = new RowLayout[nbPlayers];
 		for (int i = 0; i < nbPlayers; i++) {
@@ -126,8 +128,9 @@ public class Whist extends CardGame {
 			hands[i].setTargetArea(new TargetArea(trickLocation));
 			hands[i].draw();
 		}
-//	    for (int i = 1; i < nbPlayers; i++)  // This code can be used to visually hide the cards in a hand (make them face down)
-//	      hands[i].setVerso(true);
+//		for (int i = 1; i < nbPlayers; i++) // This code can be used to visually hide the cards in a hand (make them
+		// face down)
+//			hands[i].setVerso(true);
 		// End graphics
 	}
 
@@ -146,14 +149,15 @@ public class Whist extends CardGame {
 			trick = new Hand(deck);
 			selected = null;
 			if (0 == nextPlayer) { // Select lead depending on player type
-				hands[0].setTouchEnabled(true);
+				players[0].getHand().setTouchEnabled(true);
 				setStatus("Player 0 double-click on card to lead.");
 				while (null == selected)
 					delay(100);
 			} else {
 				setStatusText("Player " + nextPlayer + " thinking...");
 				delay(thinkingTime);
-				selected = randomCard(hands[nextPlayer]);
+//				selected = randomCard(hands[nextPlayer]);
+				selected = players[nextPlayer].playTrick();
 			}
 			// Lead with selected card
 			trick.setView(this, new RowLayout(trickLocation, (trick.getNumberOfCards() + 2) * trickWidth));
@@ -170,14 +174,14 @@ public class Whist extends CardGame {
 					nextPlayer = 0; // From last back to first
 				selected = null;
 				if (0 == nextPlayer) {
-					hands[0].setTouchEnabled(true);
+					players[0].getHand().setTouchEnabled(true);
 					setStatus("Player 0 double-click on card to follow.");
 					while (null == selected)
 						delay(100);
 				} else {
 					setStatusText("Player " + nextPlayer + " thinking...");
 					delay(thinkingTime);
-					selected = randomCard(hands[nextPlayer]);
+					selected = players[nextPlayer].playTrick();
 				}
 				// Follow with selected card
 				trick.setView(this, new RowLayout(trickLocation, (trick.getNumberOfCards() + 2) * trickWidth));
