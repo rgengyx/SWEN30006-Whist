@@ -1,5 +1,6 @@
 package WhistGame;
 
+/* This is a factory class that produces strategies when a leading card has been set */
 public class GameStrategyFactory {
 	private static GameStrategyFactory instance;
 
@@ -17,5 +18,8 @@ public class GameStrategyFactory {
 	public IGameStrategy getLegalStrategy() {
 		return (IGameStrategy) new LegalStrategy();
 	}
-
+	
+	public IGameStrategy getSmartStrategy() {
+		return (IGameStrategy) new CompositeSmartStrategy();
+	}
 }

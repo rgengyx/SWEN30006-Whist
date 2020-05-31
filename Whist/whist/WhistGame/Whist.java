@@ -45,14 +45,16 @@ public class Whist extends CardGame {
 		return clazz.getEnumConstants()[x];
 	}
 
-	// return random Card from ArrayList
-	public Card randomCard(ArrayList<Card> list) {
-		int x = random.nextInt(list.size());
-		return list.get(x);
-	}
-
 	public boolean rankGreater(Card card1, Card card2) {
 		return card1.getRankId() < card2.getRankId(); // Warning: Reverse rank order of cards (see comment on enum)
+	}
+	
+	public static int returnNBStartCards() {
+		return nbStartCards;
+	}
+	
+	public static int returnWinningScore() {
+		return winningScore;
 	}
 
 	private final String version = "1.0";
@@ -77,6 +79,7 @@ public class Whist extends CardGame {
 
 	// New code
 	private Player[] players = new Player[4];
+	private GameUpdater gameUpdater = new GameUpdater();
 
 	public void setStatus(String string) {
 		setStatusText(string);
@@ -108,6 +111,10 @@ public class Whist extends CardGame {
 			hands[i].sort(Hand.SortType.SUITPRIORITY, true);
 			players[i].setHand(hands[i]);
 		}
+		
+		// new code 31/05/2020
+		// erasing history here
+		gameUpdater.removeHistory();
 
 		// Set up human player for interaction
 		CardListener cardListener = new CardAdapter() // Human Player plays card
@@ -138,6 +145,10 @@ public class Whist extends CardGame {
 	private Optional<Integer> playRound() { // Returns winner, if any
 		// Select and display trump suit
 		final Suit trumps = randomEnum(Suit.class);
+		
+		// new code - 31/05/2020
+		gameUpdater.updateTrump(trumps);
+		
 		final Actor trumpsActor = new Actor("sprites/" + trumpImage[trumps.ordinal()]);
 		addActor(trumpsActor, trumpsActorLocation);
 		// End trump suit
@@ -169,6 +180,11 @@ public class Whist extends CardGame {
 			selected.transfer(trick, true); // transfer to trick (includes graphic effect)
 			winner = nextPlayer;
 			winningCard = selected;
+			
+			// new code - 31/05/2020
+			// all lead cards are winning cards (at the beginning at least0
+			gameUpdater.updateCard(selected, true);
+			
 			// End Lead
 			for (int j = 1; j < nbPlayers; j++) {
 				if (++nextPlayer >= nbPlayers)
@@ -214,6 +230,14 @@ public class Whist extends CardGame {
 					winner = nextPlayer;
 					winningCard = selected;
 				}
+				
+				// new code - 31/05/2020
+				if (selected == winningCard) {
+					gameUpdater.updateCard(selected, true);
+				} else {
+					gameUpdater.updateCard(selected, false);
+				}
+				
 				// End Follow
 			}
 			delay(600);
@@ -223,6 +247,10 @@ public class Whist extends CardGame {
 			setStatusText("Player " + nextPlayer + " wins trick.");
 			scores[nextPlayer]++;
 			updateScore(nextPlayer);
+			
+			// new code - 30/05/2020
+			gameUpdater.updateScore(nextPlayer);
+			
 			if (winningScore == scores[nextPlayer])
 				return Optional.of(nextPlayer);
 		}
@@ -244,18 +272,25 @@ public class Whist extends CardGame {
 		if (properties.getProperty("name").equals("original")) {
 
 			IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
-			players[0] = new Player(randomStrategy);
-			players[1] = new Player(randomStrategy);
-			players[2] = new Player(randomStrategy);
-			players[3] = new Player(randomStrategy);
+			IStartStrategy randomStartStrategy = StartStrategyFactory.getInstance().getRandomStrategy();
+			players[0] = new Player(randomStrategy, randomStartStrategy, 0, nbPlayers, deck);
+			players[1] = new Player(randomStrategy, randomStartStrategy, 1, nbPlayers, deck);
+			players[2] = new Player(randomStrategy, randomStartStrategy, 2, nbPlayers, deck);
+			players[3] = new Player(randomStrategy, randomStartStrategy, 3, nbPlayers, deck);
 
 		} else if (properties.getProperty("name").equals("legal")) {
 
 			IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
-			players[0] = new Player(legalStrategy);
-			players[1] = new Player(legalStrategy);
-			players[2] = new Player(legalStrategy);
-			players[3] = new Player(legalStrategy);
+			IStartStrategy legalStartStrategy = StartStrategyFactory.getInstance().getLegalStrategy();
+			players[0] = new Player(legalStrategy, legalStartStrategy, 0, nbPlayers, deck);
+			players[1] = new Player(legalStrategy, legalStartStrategy, 1, nbPlayers, deck);
+			players[2] = new Player(legalStrategy, legalStartStrategy, 2, nbPlayers, deck);
+			players[3] = new Player(legalStrategy, legalStartStrategy, 3, nbPlayers, deck);
+		}
+		
+		// new code - 31/05/2020
+		for (int i = 0; i < nbPlayers; i++) {
+			gameUpdater.addGameListeners(players[i]);
 		}
 
 		setTitle("Whist (V" + version + ") Constructed for UofM SWEN30006 with JGameGrid (www.aplu.ch)");
@@ -278,7 +313,7 @@ public class Whist extends CardGame {
 		// Read properties
 		FileReader inStream = null;
 		try {
-			inStream = new FileReader("original.properties");
+			inStream = new FileReader("legal.properties");
 			whistProperties.load(inStream);
 		} finally {
 			if (inStream != null) {

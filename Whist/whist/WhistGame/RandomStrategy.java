@@ -1,4 +1,5 @@
 package WhistGame;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -13,12 +14,6 @@ public class RandomStrategy implements IGameStrategy {
 	@Override
 	public Card playTrick(Player player, Suit lead) {
 
-		return randomCard(player.getHand());
-	}
-
-	@Override
-	public Card playLeadingCard(Player player) {
-		
 		return randomCard(player.getHand());
 	}
 	
