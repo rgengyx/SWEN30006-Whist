@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -169,7 +168,7 @@ public class Whist extends CardGame {
 				setStatusText("Player " + nextPlayer + " thinking...");
 				delay(thinkingTime);
 //				selected = randomCard(hands[nextPlayer]);
-				selected = players[nextPlayer].playLeadingCard();
+				selected = players[nextPlayer].playTrick(null);
 			}
 			// Lead with selected card
 			trick.setView(this, new RowLayout(trickLocation, (trick.getNumberOfCards() + 2) * trickWidth));
@@ -272,20 +271,18 @@ public class Whist extends CardGame {
 		if (properties.getProperty("name").equals("original")) {
 
 			IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
-			IStartStrategy randomStartStrategy = StartStrategyFactory.getInstance().getRandomStrategy();
-			players[0] = new Player(randomStrategy, randomStartStrategy, 0, nbPlayers, deck);
-			players[1] = new Player(randomStrategy, randomStartStrategy, 1, nbPlayers, deck);
-			players[2] = new Player(randomStrategy, randomStartStrategy, 2, nbPlayers, deck);
-			players[3] = new Player(randomStrategy, randomStartStrategy, 3, nbPlayers, deck);
+			players[0] = new Player(randomStrategy, 0, nbPlayers, deck);
+			players[1] = new Player(randomStrategy, 1, nbPlayers, deck);
+			players[2] = new Player(randomStrategy, 2, nbPlayers, deck);
+			players[3] = new Player(randomStrategy, 3, nbPlayers, deck);
 
 		} else if (properties.getProperty("name").equals("legal")) {
 
 			IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
-			IStartStrategy legalStartStrategy = StartStrategyFactory.getInstance().getLegalStrategy();
-			players[0] = new Player(legalStrategy, legalStartStrategy, 0, nbPlayers, deck);
-			players[1] = new Player(legalStrategy, legalStartStrategy, 1, nbPlayers, deck);
-			players[2] = new Player(legalStrategy, legalStartStrategy, 2, nbPlayers, deck);
-			players[3] = new Player(legalStrategy, legalStartStrategy, 3, nbPlayers, deck);
+			players[0] = new Player(legalStrategy, 0, nbPlayers, deck);
+			players[1] = new Player(legalStrategy, 1, nbPlayers, deck);
+			players[2] = new Player(legalStrategy, 2, nbPlayers, deck);
+			players[3] = new Player(legalStrategy, 3, nbPlayers, deck);
 		}
 		
 		// new code - 31/05/2020

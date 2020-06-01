@@ -14,12 +14,17 @@ public class LegalStrategy implements IGameStrategy {
 
 	@Override
 	public Card playTrick(Player player, Suit lead) {
-		ArrayList<Card> leadCards = player.getHand().getCardsWithSuit(lead);
 		
-		if (leadCards.isEmpty()) {
+		if (lead == null) {
 			return randomCard(player.getHand());
 		} else {
-			return randomCard(leadCards);
+			ArrayList<Card> leadCards = player.getHand().getCardsWithSuit(lead);
+			
+			if (leadCards.isEmpty()) {
+				return randomCard(player.getHand());
+			} else {
+				return randomCard(leadCards);
+			}
 		}
 	}
 	

@@ -10,12 +10,10 @@ public class Player implements IGameListener {
 	private boolean isInteractive = false;
 	
 	private IGameStrategy gameStrategy;
-	private IStartStrategy startGameStrategy;
 	private PlayerMemory memory;
 
-	public Player(IGameStrategy gameStrategy, IStartStrategy startGameStrategy, int id, int nbPlayers, Deck deck) {
+	public Player(IGameStrategy gameStrategy, int id, int nbPlayers, Deck deck) {
 		this.gameStrategy = gameStrategy;
-		this.startGameStrategy = startGameStrategy;
 		this.id = id;
 		this.memory = new PlayerMemory(nbPlayers, deck);
 	}
@@ -42,10 +40,6 @@ public class Player implements IGameListener {
 
 	public void setInteractive(boolean isInteractive) {
 		this.isInteractive = isInteractive;
-	}
-	
-	public Card playLeadingCard() {
-		return startGameStrategy.playLeadingCard(this);
 	}
 
 	public Card playTrick(Suit lead) {
