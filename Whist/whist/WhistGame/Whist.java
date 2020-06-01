@@ -55,11 +55,15 @@ public class Whist extends CardGame {
 	public static int returnWinningScore() {
 		return winningScore;
 	}
+	
+	public static int returnNBPlayers() {
+		return nbPlayers;
+	}
 
 	private final String version = "1.0";
-	public final int nbPlayers = 4;
-	public static int nbStartCards = 13;
-	public static int winningScore = 11;
+	private static final int nbPlayers = 4;
+	private static int nbStartCards = 13;
+	private static int winningScore = 11;
 	private final int handWidth = 400;
 	private final int trickWidth = 40;
 	private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
