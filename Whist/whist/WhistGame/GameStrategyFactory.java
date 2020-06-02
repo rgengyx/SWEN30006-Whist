@@ -18,7 +18,11 @@ public class GameStrategyFactory {
 	public IGameStrategy getLegalStrategy() {
 		return (IGameStrategy) new LegalStrategy();
 	}
-	
+
+	public IGameStrategy getInteractiveStrategy() {
+		return (IGameStrategy) new InteractiveStrategy();
+	}
+
 	public IGameStrategy getSmartStrategy() {
 		return (IGameStrategy) new CompositeSmartStrategy();
 	}

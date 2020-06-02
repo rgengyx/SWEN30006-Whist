@@ -47,11 +47,11 @@ public class Whist extends CardGame {
 	public boolean rankGreater(Card card1, Card card2) {
 		return card1.getRankId() < card2.getRankId(); // Warning: Reverse rank order of cards (see comment on enum)
 	}
-	
+
 	public static int returnNBStartCards() {
 		return nbStartCards;
 	}
-	
+
 	public static int returnWinningScore() {
 		return winningScore;
 	}
@@ -110,20 +110,30 @@ public class Whist extends CardGame {
 			hands[i].sort(Hand.SortType.SUITPRIORITY, true);
 			players[i].setHand(hands[i]);
 		}
-		
+
 		// new code 31/05/2020
 		// erasing history here
 		gameUpdater.removeHistory();
 
 		// Set up human player for interaction
+
 		CardListener cardListener = new CardAdapter() // Human Player plays card
 		{
 			public void leftDoubleClicked(Card card) {
 				selected = card;
-				players[0].getHand().setTouchEnabled(false);
+				for (int i = 0; i < players.length; i++) {
+					if (players[i].getGameStrategy() instanceof InteractiveStrategy) {
+						players[i].getHand().setTouchEnabled(false);
+					}
+				}
 			}
 		};
-		players[0].getHand().addCardListener(cardListener);
+
+		for (int i = 0; i < players.length; i++) {
+			if (players[i].getGameStrategy() instanceof InteractiveStrategy) {
+				players[i].getHand().addCardListener(cardListener);
+			}
+		}
 
 		// graphics
 		RowLayout[] layouts = new RowLayout[nbPlayers];
@@ -144,10 +154,10 @@ public class Whist extends CardGame {
 	private Optional<Integer> playRound() { // Returns winner, if any
 		// Select and display trump suit
 		final Suit trumps = randomEnum(Suit.class);
-		
+
 		// new code - 31/05/2020
 		gameUpdater.updateTrump(trumps);
-		
+
 		final Actor trumpsActor = new Actor("sprites/" + trumpImage[trumps.ordinal()]);
 		addActor(trumpsActor, trumpsActorLocation);
 		// End trump suit
@@ -159,9 +169,10 @@ public class Whist extends CardGame {
 		for (int i = 0; i < nbStartCards; i++) {
 			trick = new Hand(deck);
 			selected = null;
-			if (0 == nextPlayer) { // Select lead depending on player type
-				players[0].getHand().setTouchEnabled(true);
-				setStatus("Player 0 double-click on card to lead.");
+			if (players[nextPlayer].getGameStrategy() instanceof InteractiveStrategy) { // Select lead depending on
+																						// player type
+				players[nextPlayer].getHand().setTouchEnabled(true);
+				setStatus("Player " + nextPlayer + " double-click on card to lead.");
 				while (null == selected)
 					delay(100);
 			} else {
@@ -179,19 +190,19 @@ public class Whist extends CardGame {
 			selected.transfer(trick, true); // transfer to trick (includes graphic effect)
 			winner = nextPlayer;
 			winningCard = selected;
-			
+
 			// new code - 31/05/2020
 			// all lead cards are winning cards (at the beginning at least0
 			gameUpdater.updateCard(selected, true);
-			
+
 			// End Lead
 			for (int j = 1; j < nbPlayers; j++) {
 				if (++nextPlayer >= nbPlayers)
 					nextPlayer = 0; // From last back to first
 				selected = null;
-				if (0 == nextPlayer) {
-					players[0].getHand().setTouchEnabled(true);
-					setStatus("Player 0 double-click on card to follow.");
+				if (players[nextPlayer].getGameStrategy() instanceof InteractiveStrategy) {
+					players[nextPlayer].getHand().setTouchEnabled(true);
+					setStatus("Player " + nextPlayer + " double-click on card to follow.");
 					while (null == selected)
 						delay(100);
 				} else {
@@ -229,14 +240,14 @@ public class Whist extends CardGame {
 					winner = nextPlayer;
 					winningCard = selected;
 				}
-				
+
 				// new code - 31/05/2020
 				if (selected == winningCard) {
 					gameUpdater.updateCard(selected, true);
 				} else {
 					gameUpdater.updateCard(selected, false);
 				}
-				
+
 				// End Follow
 			}
 			delay(600);
@@ -246,10 +257,10 @@ public class Whist extends CardGame {
 			setStatusText("Player " + nextPlayer + " wins trick.");
 			scores[nextPlayer]++;
 			updateScore(nextPlayer);
-			
+
 			// new code - 30/05/2020
 			gameUpdater.updateScore(nextPlayer);
-			
+
 			if (winningScore == scores[nextPlayer])
 				return Optional.of(nextPlayer);
 		}
@@ -268,23 +279,23 @@ public class Whist extends CardGame {
 		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
 		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
 
-		if (properties.getProperty("name").equals("original")) {
+		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
+		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
+		IGameStrategy interactiveStrategy = GameStrategyFactory.getInstance().getInteractiveStrategy();
 
-			IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
-			players[0] = new Player(randomStrategy, 0, nbPlayers, deck);
-			players[1] = new Player(randomStrategy, 1, nbPlayers, deck);
-			players[2] = new Player(randomStrategy, 2, nbPlayers, deck);
-			players[3] = new Player(randomStrategy, 3, nbPlayers, deck);
+		for (int i = 0; i < players.length; i++) {
 
-		} else if (properties.getProperty("name").equals("legal")) {
-
-			IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
-			players[0] = new Player(legalStrategy, 0, nbPlayers, deck);
-			players[1] = new Player(legalStrategy, 1, nbPlayers, deck);
-			players[2] = new Player(legalStrategy, 2, nbPlayers, deck);
-			players[3] = new Player(legalStrategy, 3, nbPlayers, deck);
+			String player = "player" + i;
+			String strategy = properties.getProperty(player);
+			if (strategy.equals("random")) {
+				players[i] = new Player(randomStrategy, 0, nbPlayers, deck);
+			} else if (strategy.equals("legal")) {
+				players[i] = new Player(legalStrategy, 0, nbPlayers, deck);
+			} else if (strategy.equals("interactive")) {
+				players[i] = new Player(interactiveStrategy, 0, nbPlayers, deck);
+			}
 		}
-		
+
 		// new code - 31/05/2020
 		for (int i = 0; i < nbPlayers; i++) {
 			gameUpdater.addGameListeners(players[i]);
@@ -310,7 +321,7 @@ public class Whist extends CardGame {
 		// Read properties
 		FileReader inStream = null;
 		try {
-			inStream = new FileReader("legal.properties");
+			inStream = new FileReader("template.properties");
 			whistProperties.load(inStream);
 		} finally {
 			if (inStream != null) {
