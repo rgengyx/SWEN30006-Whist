@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
@@ -75,7 +76,7 @@ public class Whist extends CardGame {
 	private final Location trickLocation = new Location(350, 350);
 	private final Location textLocation = new Location(350, 450);
 	private final int thinkingTime = 2000;
-	private Hand[] hands;
+	private Hand[] hands = { new Hand(deck), new Hand(deck), new Hand(deck), new Hand(deck) };
 	private Location hideLocation = new Location(-500, -500);
 	private Location trumpsActorLocation = new Location(50, 50);
 	private boolean enforceRules = false;
@@ -109,8 +110,21 @@ public class Whist extends CardGame {
 	private Card selected;
 
 	private void initRound() {
-		hands = deck.dealingOut(nbPlayers, nbStartCards); // Last element of hands is leftover cards; these are ignored
+//		hands = deck.dealingOut(nbPlayers, nbStartCards, false); // Last element of hands is leftover cards; these are
+		// ignored
+		ArrayList dealtCards = new ArrayList();
 		for (int i = 0; i < nbPlayers; i++) {
+			int j = 0;
+			while (j < nbStartCards) {
+				int randInt = random.nextInt(52);
+				if (!dealtCards.contains(randInt)) {
+					dealtCards.add(randInt);
+					Card card = new Card(deck, randInt);
+					hands[i].insert(card, true);
+					j += 1;
+				}
+			}
+
 			hands[i].sort(Hand.SortType.SUITPRIORITY, true);
 			players[i].setHand(hands[i]);
 		}
@@ -283,8 +297,8 @@ public class Whist extends CardGame {
 		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
 		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
 
-		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
-		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
+		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy(random);
+		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy(random);
 		IGameStrategy smartStrategy = GameStrategyFactory.getInstance().getSmartStrategy();
 		IGameStrategy interactiveStrategy = GameStrategyFactory.getInstance().getInteractiveStrategy();
 

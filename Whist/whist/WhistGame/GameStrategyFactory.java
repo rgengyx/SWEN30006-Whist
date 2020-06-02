@@ -1,5 +1,7 @@
 package WhistGame;
 
+import java.util.Random;
+
 /* This is a factory class that produces strategies when a leading card has been set */
 public class GameStrategyFactory {
 	private static GameStrategyFactory instance;
@@ -11,12 +13,12 @@ public class GameStrategyFactory {
 		return instance;
 	}
 
-	public IGameStrategy getRandomStrategy() {
-		return (IGameStrategy) new RandomStrategy();
+	public IGameStrategy getRandomStrategy(Random random) {
+		return (IGameStrategy) new RandomStrategy(random);
 	}
 
-	public IGameStrategy getLegalStrategy() {
-		return (IGameStrategy) new LegalStrategy();
+	public IGameStrategy getLegalStrategy(Random random) {
+		return (IGameStrategy) new LegalStrategy(random);
 	}
 
 	public IGameStrategy getInteractiveStrategy() {
