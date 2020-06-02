@@ -283,8 +283,9 @@ public class Whist extends CardGame {
 		} else if (properties.getProperty("name").equals("legal")) {
 
 			IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
+			IGameStrategy smartStrategy = GameStrategyFactory.getInstance().getSmartStrategy();
 			players[0] = new Player(legalStrategy, 0, nbPlayers, deck);
-			players[1] = new Player(legalStrategy, 1, nbPlayers, deck);
+			players[1] = new Player(smartStrategy, 1, nbPlayers, deck);
 			players[2] = new Player(legalStrategy, 2, nbPlayers, deck);
 			players[3] = new Player(legalStrategy, 3, nbPlayers, deck);
 		}

@@ -40,13 +40,13 @@ public class SmartStrategy implements IGameStrategy {
 		for (Card card : currentHand) {
 			if (trumpCard == null && currentTrump == card.getSuit()) {
 				trumpCard = card;
-			} else if (currentTrump == card.getSuit() && trumpCard.getRankId() > card.getRankId()) {
+			} else if (currentTrump == card.getSuit() && trumpCard.getRankId() < card.getRankId()) {
 				trumpCard = card;
 			}
 			
 			if (leastRankCard == null && card.getSuit() != currentTrump) {
 				leastRankCard = card;
-			} else if (currentTrump != card.getSuit() && leastRankCard.getRankId() > card.getRankId()) {
+			} else if (currentTrump != card.getSuit() && leastRankCard.getRankId() < card.getRankId()) {
 				leastRankCard = card;
 			}
 		}
@@ -68,7 +68,7 @@ public class SmartStrategy implements IGameStrategy {
 				bestCard = card;
 			}
 			
-			if (card.getRankId() > bestCard.getRankId()) {
+			if (card.getRankId() < bestCard.getRankId()) {
 				bestCard = card;
 			}
 		} 
@@ -92,18 +92,16 @@ public class SmartStrategy implements IGameStrategy {
 		Card higherCard = null, lowestCard = null;
 		
 		for (Card card : currentHand) {
-			if (leadingCard.getRankId() < card.getRankId()) {
+			if (leadingCard.getRankId() > card.getRankId()) {
 				if (higherCard == null) {
 					higherCard = card;
-				} else if (card.getRankId() < higherCard.getRankId()) {
+				} else if (card.getRankId() > higherCard.getRankId()) {
 					higherCard = card;
 				}
-			}
-			
-			if (leadingCard.getRankId() > card.getRankId()) {
+			} else {
 				if (lowestCard == null) {
 					lowestCard = card;
-				} else if (card.getRankId() < lowestCard.getRankId()) {
+				} else if (card.getRankId() > lowestCard.getRankId()) {
 					lowestCard = card;
 				}
 			}
@@ -126,13 +124,13 @@ public class SmartStrategy implements IGameStrategy {
 			if (card.getSuit() == trump) {
 				if (trumpCard == null) {
 					trumpCard = card;
-				} else if (trumpCard.getRankId() > card.getRankId()) {
+				} else if (trumpCard.getRankId() < card.getRankId()) {
 					trumpCard = card;
 				}
 			} else {
 				if (otherCard == null) {
 					otherCard = card;
-				} else if (otherCard.getRankId() > card.getRankId()) {
+				} else if (otherCard.getRankId() < card.getRankId()) {
 					otherCard = card;
 				}
 			}
