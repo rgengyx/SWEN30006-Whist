@@ -92,16 +92,24 @@ public class SmartStrategy implements IGameStrategy {
 		Card higherCard = null, lowestCard = null;
 		
 		for (Card card : currentHand) {
-			if (leadingCard.getRankId() > card.getRankId()) {
-				if (higherCard == null) {
-					higherCard = card;
-				} else if (card.getRankId() > higherCard.getRankId()) {
-					higherCard = card;
+			if (leadingCard.getSuit() == lead) {
+				if (leadingCard.getRankId() > card.getRankId()) {
+					if (higherCard == null) {
+						higherCard = card;
+					} else if (card.getRankId() > higherCard.getRankId()) {
+						higherCard = card;
+					}
+				} else {
+					if (lowestCard == null) {
+						lowestCard = card;
+					} else if (card.getRankId() > lowestCard.getRankId()) {
+						lowestCard = card;
+					}
 				}
 			} else {
 				if (lowestCard == null) {
 					lowestCard = card;
-				} else if (card.getRankId() > lowestCard.getRankId()) {
+				} else if (lowestCard.getRankId() < card.getRankId()) {
 					lowestCard = card;
 				}
 			}
