@@ -17,6 +17,11 @@ public class Player implements IGameListener {
 		this.id = id;
 		this.memory = new PlayerMemory(nbPlayers, deck);
 	}
+	
+	// attempts to retrieve player (not limited to current player) with highest score
+	public int getHighestPlayerScore() {
+		return memory.getHighestPlayerScore(id);
+	}
 
 	public Hand getHand() {
 		return hand;

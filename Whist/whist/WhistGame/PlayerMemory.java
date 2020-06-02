@@ -28,6 +28,19 @@ public class PlayerMemory {
 		}
 	}
 	
+	// retrieves highest player score (does not involve current player)
+	public int getHighestPlayerScore(int id) {
+		int maxScore = 0;
+		for (int i = 0; i < Whist.returnNBPlayers(); i++) {
+			if (i != id) {
+				if (maxScore < scores[i]) {
+					maxScore = scores[i];
+				}
+			}
+		}
+		return maxScore;
+	}
+	
 	public Suit getTrump() {
 		return trump;
 	}

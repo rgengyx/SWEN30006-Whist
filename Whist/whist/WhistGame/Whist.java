@@ -56,10 +56,14 @@ public class Whist extends CardGame {
 		return winningScore;
 	}
 
+	public static int returnNBPlayers() {
+		return nbPlayers;
+	}
+
 	private final String version = "1.0";
-	public final int nbPlayers = 4;
-	public static int nbStartCards = 13;
-	public static int winningScore = 11;
+	private static final int nbPlayers = 4;
+	private static int nbStartCards = 13;
+	private static int winningScore = 11;
 	private final int handWidth = 400;
 	private final int trickWidth = 40;
 	private final Deck deck = new Deck(Suit.values(), Rank.values(), "cover");
@@ -281,16 +285,18 @@ public class Whist extends CardGame {
 
 		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy();
 		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy();
+		IGameStrategy smartStrategy = GameStrategyFactory.getInstance().getSmartStrategy();
 		IGameStrategy interactiveStrategy = GameStrategyFactory.getInstance().getInteractiveStrategy();
 
 		for (int i = 0; i < players.length; i++) {
-
 			String player = "player" + i;
 			String strategy = properties.getProperty(player);
 			if (strategy.equals("random")) {
 				players[i] = new Player(randomStrategy, 0, nbPlayers, deck);
 			} else if (strategy.equals("legal")) {
 				players[i] = new Player(legalStrategy, 0, nbPlayers, deck);
+			} else if (strategy.equals("smart")) {
+				players[i] = new Player(smartStrategy, 0, nbPlayers, deck);
 			} else if (strategy.equals("interactive")) {
 				players[i] = new Player(interactiveStrategy, 0, nbPlayers, deck);
 			}

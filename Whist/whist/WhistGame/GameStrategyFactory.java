@@ -24,6 +24,6 @@ public class GameStrategyFactory {
 	}
 
 	public IGameStrategy getSmartStrategy() {
-		return (IGameStrategy) new CompositeSmartStrategy();
+		return (IGameStrategy) new SmartStrategy();
 	}
 }
