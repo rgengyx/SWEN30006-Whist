@@ -2,11 +2,12 @@ package WhistGame;
 
 import java.util.Random;
 
-/* This is a factory class that produces strategies when a leading card has been set
+/* This is a factory class that produces strategies for card choice when playing Whist
  * Made by - Project Team 24 */
 public class GameStrategyFactory {
 	private static GameStrategyFactory instance;
-
+	
+	// The factory itself is a singleton 
 	public static GameStrategyFactory getInstance() {
 		if (instance == null) {
 			instance = new GameStrategyFactory();

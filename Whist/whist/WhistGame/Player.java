@@ -1,5 +1,7 @@
 package WhistGame;
-/* Made by - Project Team 24 */
+/* Represents a player in a whist game
+ * 
+ * Made by - Project Team 24 */
 import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Deck;
@@ -42,12 +44,11 @@ public class Player implements IGameListener {
 	public IGameStrategy getGameStrategy() {
 		return gameStrategy;
 	}
-
+	
+	// return card based on strategy that player uses
 	public Card playTrick(Suit lead) {
 		return gameStrategy.playTrick(this, lead);
 	}
-
-	// Not sure about this type of code implementation
 
 	@Override
 	public void updateCard(Card card, boolean winningCard) {

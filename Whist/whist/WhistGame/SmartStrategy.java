@@ -1,5 +1,7 @@
 package WhistGame;
-/* Made by - Project Team 24 */
+/* Strategy entails picking a card based on circumstances
+ * 
+ * Made by - Project Team 24 */
 import java.util.ArrayList;
 
 import WhistGame.Whist.Suit;
@@ -9,6 +11,7 @@ public class SmartStrategy implements IGameStrategy {
 
 	@Override
 	public Card playTrick(Player player, Suit lead) {
+		// if no leading card has been determined, find one, if one has, find a follow up card
 		if (lead == null) {
 			return determineLeadingCard(player);
 		} else {

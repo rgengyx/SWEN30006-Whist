@@ -111,8 +111,7 @@ public class Whist extends CardGame {
 	private Card selected;
 
 	private void initRound() {
-//		hands = deck.dealingOut(nbPlayers, nbStartCards, false); // Last element of hands is leftover cards; these are
-		// ignored
+		// section of code here deals with handing out random card to each player
 		ArrayList dealtCards = new ArrayList();
 		for (int i = 0; i < nbPlayers; i++) {
 			int j = 0;
@@ -130,7 +129,6 @@ public class Whist extends CardGame {
 			players[i].setHand(hands[i]);
 		}
 
-		// new code 31/05/2020
 		// erasing history here
 		gameUpdater.removeHistory();
 
@@ -174,7 +172,6 @@ public class Whist extends CardGame {
 		// Select and display trump suit
 		final Suit trumps = randomEnum(Suit.class);
 
-		// new code - 31/05/2020
 		gameUpdater.updateTrump(trumps);
 
 		final Actor trumpsActor = new Actor("sprites/" + trumpImage[trumps.ordinal()]);
@@ -197,7 +194,6 @@ public class Whist extends CardGame {
 			} else {
 				setStatusText("Player " + nextPlayer + " thinking...");
 				delay(thinkingTime);
-//				selected = randomCard(hands[nextPlayer]);
 				selected = players[nextPlayer].playTrick(null);
 			}
 			// Lead with selected card
@@ -210,8 +206,7 @@ public class Whist extends CardGame {
 			winner = nextPlayer;
 			winningCard = selected;
 
-			// new code - 31/05/2020
-			// all lead cards are winning cards (at the beginning at least0
+			// all lead cards are winning cards (at the beginning at least)
 			gameUpdater.updateCard(selected, true);
 
 			// End Lead
@@ -260,7 +255,7 @@ public class Whist extends CardGame {
 					winningCard = selected;
 				}
 
-				// new code - 31/05/2020
+				// depending if card played is best card out of trick, update player memory
 				if (selected == winningCard) {
 					gameUpdater.updateCard(selected, true);
 				} else {
@@ -287,6 +282,7 @@ public class Whist extends CardGame {
 		return Optional.empty();
 	}
 	
+	/* code responsible for instantiating players based on property file */
 	private void declarePlayers(Properties properties) throws PlayerStrategyException{
 		
 		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy(random);
@@ -311,15 +307,18 @@ public class Whist extends CardGame {
 		}
 	}
 	
+	/* code responsible for configuring game rules set by property file */
 	private void declareGameRules(Properties properties) throws WinningScoreException, AmountCardException{
 		nbStartCards = Integer.parseInt(properties.getProperty("nbStartCards"));
 		
+		// cards given to each player must be between 1 to 13
 		if (nbStartCards <= 0 || nbStartCards > 13) {
 			throw new AmountCardException();
 		}
 		
 		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
 		
+		// doesn't make sense if winning score is below 1 (game will repeat forever if below 1)
 		if (winningScore < 1) {
 			throw new WinningScoreException();
 		}
@@ -338,7 +337,7 @@ public class Whist extends CardGame {
 		
 		declarePlayers(properties);
 		
-		// new code - 31/05/2020
+		// add subscribers to subject
 		for (int i = 0; i < nbPlayers; i++) {
 			gameUpdater.addGameListeners(players[i]);
 		}

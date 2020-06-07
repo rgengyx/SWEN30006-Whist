@@ -1,5 +1,7 @@
 package WhistGame;
-/* Made by - Project Team 24 */
+/* An interface representing what the GameUpdater will update for each of its subscribers
+ * 
+ * Made by - Project Team 24 */
 import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 

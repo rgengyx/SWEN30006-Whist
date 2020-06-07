@@ -25,7 +25,7 @@ public class GameUpdater {
 			player.updateCard(card, winningCard);
 		}
 	}
-	
+
 	public void updateScore(int nPlayer) {
 		for (IGameListener player : gameListeners) {
 			player.updateScore(nPlayer);

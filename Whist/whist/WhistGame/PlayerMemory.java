@@ -17,6 +17,8 @@ public class PlayerMemory {
 	public PlayerMemory(int nbPlayers, Deck deck) {
 		scores = new int[nbPlayers];
 		initScores(nbPlayers);
+		
+		// the reason we create a new hand instance is to keep track of all cards
 		cardHistory = new Hand(deck);
 		trump = null;
 		currentWinningCard = null;
@@ -69,8 +71,8 @@ public class PlayerMemory {
 		this.trump = trump;
 	}
 	
+	// we remove history when all cards have been depleted, but game still goes on
 	public void removeHistory() {
-		// very very very uncertain what this parameter really does
 		cardHistory.removeAll(false);
 	}
 }

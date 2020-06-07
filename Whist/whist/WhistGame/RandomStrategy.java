@@ -1,5 +1,7 @@
 package WhistGame;
-/* Made by - Project Team 24 */
+/* Strategy entails picking a random card from a player's hand
+ * 
+ * Made by - Project Team 24 */
 import java.util.Random;
 
 import WhistGame.Whist.Suit;
