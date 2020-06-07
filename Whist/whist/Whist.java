@@ -364,7 +364,7 @@ public class Whist extends CardGame {
 		// Read properties
 		FileReader inStream = null;
 		try {
-			inStream = new FileReader("template.properties");
+			inStream = new FileReader("whist.properties");
 			whistProperties.load(inStream);
 		} finally {
 			if (inStream != null) {
