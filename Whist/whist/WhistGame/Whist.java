@@ -1,6 +1,7 @@
 package WhistGame;
-// Whist.java
-
+/* Whist.java 
+ * Has been modified - Project Team 24
+ */
 import java.awt.Color;
 import java.awt.Font;
 import java.io.FileReader;

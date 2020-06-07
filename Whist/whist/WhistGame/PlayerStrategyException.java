@@ -1,6 +1,7 @@
 package WhistGame;
 /**
  * Exception that is thrown when player strategy declared is unknown
+ * Made by - Project Team 24
  */
 @SuppressWarnings("serial")
 public class PlayerStrategyException extends Exception {

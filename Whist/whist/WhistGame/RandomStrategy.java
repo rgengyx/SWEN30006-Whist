@@ -1,5 +1,5 @@
 package WhistGame;
-
+/* Made by - Project Team 24 */
 import java.util.Random;
 
 import WhistGame.Whist.Suit;

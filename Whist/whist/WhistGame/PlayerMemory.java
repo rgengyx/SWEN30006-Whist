@@ -1,5 +1,5 @@
 package WhistGame;
-
+/* Made by - Project Team 24 */
 import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Deck;

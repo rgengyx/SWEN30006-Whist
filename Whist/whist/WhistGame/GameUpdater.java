@@ -6,7 +6,8 @@ import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 
 /* This is the "subject" of the observer pattern, it notifies other players when there are specific changes
- * during and before the game */
+ * during and before the game
+ * Made by - Project Team 24 */
 public class GameUpdater {
 	private ArrayList<IGameListener> gameListeners;
 	
