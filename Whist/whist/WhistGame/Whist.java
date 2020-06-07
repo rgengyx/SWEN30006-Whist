@@ -285,23 +285,14 @@ public class Whist extends CardGame {
 		removeActor(trumpsActor);
 		return Optional.empty();
 	}
-
-	public Whist(Properties properties) {
-
-		super(700, 700, 30);
-
-		// New code
-		long seedProp = Long.parseLong(properties.getProperty("Seed"));
-		random = new Random(seedProp);
-		nbStartCards = Integer.parseInt(properties.getProperty("nbStartCards"));
-		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
-		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
-
+	
+	private void declarePlayers(Properties properties) throws PlayerStrategyException{
+		
 		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy(random);
 		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy(random);
 		IGameStrategy smartStrategy = GameStrategyFactory.getInstance().getSmartStrategy();
 		IGameStrategy interactiveStrategy = GameStrategyFactory.getInstance().getInteractiveStrategy();
-
+		
 		for (int i = 0; i < players.length; i++) {
 			String player = "player" + i;
 			String strategy = properties.getProperty(player);
@@ -313,9 +304,39 @@ public class Whist extends CardGame {
 				players[i] = new Player(smartStrategy, 0, nbPlayers, deck);
 			} else if (strategy.equals("interactive")) {
 				players[i] = new Player(interactiveStrategy, 0, nbPlayers, deck);
+			} else {
+				throw new PlayerStrategyException();
 			}
 		}
+	}
+	
+	private void declareGameRules(Properties properties) throws WinningScoreException, AmountCardException{
+		nbStartCards = Integer.parseInt(properties.getProperty("nbStartCards"));
+		
+		if (nbStartCards <= 0 || nbStartCards > 13) {
+			throw new AmountCardException();
+		}
+		
+		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
+		
+		if (winningScore < 1) {
+			throw new WinningScoreException();
+		}
+		
+		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
+	}
 
+	public Whist(Properties properties) throws PlayerStrategyException, WinningScoreException, AmountCardException {
+
+		super(700, 700, 30);
+		
+		long seedProp = Long.parseLong(properties.getProperty("Seed"));
+		random = new Random(seedProp);
+		
+		declareGameRules(properties);
+		
+		declarePlayers(properties);
+		
 		// new code - 31/05/2020
 		for (int i = 0; i < nbPlayers; i++) {
 			gameUpdater.addGameListeners(players[i]);
@@ -334,7 +355,7 @@ public class Whist extends CardGame {
 		refresh();
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, PlayerStrategyException, WinningScoreException, AmountCardException {
 
 		Properties whistProperties = new Properties();
 
