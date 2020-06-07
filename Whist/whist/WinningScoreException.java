@@ -1,4 +1,4 @@
-package WhistGame;
+
 /**
  * Exception that is thrown when the winning score value is not above 1 inclusive.
  * Made by - Project Team 24

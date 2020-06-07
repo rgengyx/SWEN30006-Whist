@@ -1,8 +1,7 @@
-package WhistGame;
+
 /* Represents a player in a whist game
  * 
  * Made by - Project Team 24 */
-import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Deck;
 import ch.aplu.jcardgame.Hand;
@@ -19,8 +18,9 @@ public class Player implements IGameListener {
 		this.id = id;
 		this.memory = new PlayerMemory(nbPlayers, deck);
 	}
-	
-	// attempts to retrieve player (not limited to current player) with highest score
+
+	// attempts to retrieve player (not limited to current player) with highest
+	// score
 	public int getHighestPlayerScore() {
 		return memory.getHighestPlayerScore(id);
 	}
@@ -29,7 +29,7 @@ public class Player implements IGameListener {
 		return hand;
 	}
 
-	public Suit getTrump() {
+	public Whist.Suit getTrump() {
 		return memory.getTrump();
 	}
 
@@ -44,9 +44,9 @@ public class Player implements IGameListener {
 	public IGameStrategy getGameStrategy() {
 		return gameStrategy;
 	}
-	
+
 	// return card based on strategy that player uses
-	public Card playTrick(Suit lead) {
+	public Card playTrick(Whist.Suit lead) {
 		return gameStrategy.playTrick(this, lead);
 	}
 
@@ -61,7 +61,7 @@ public class Player implements IGameListener {
 	}
 
 	@Override
-	public void updateTrump(Suit trump) {
+	public void updateTrump(Whist.Suit trump) {
 		memory.updateTrump(trump);
 	}
 

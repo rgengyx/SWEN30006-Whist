@@ -1,10 +1,9 @@
-package WhistGame;
+
 /* Strategy entails picking a random card from a player's hand
  * 
  * Made by - Project Team 24 */
 import java.util.Random;
 
-import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 
@@ -17,7 +16,7 @@ public class RandomStrategy implements IGameStrategy {
 	}
 
 	@Override
-	public Card playTrick(Player player, Suit lead) {
+	public Card playTrick(Player player, Whist.Suit lead) {
 		return randomCard(player.getHand());
 	}
 

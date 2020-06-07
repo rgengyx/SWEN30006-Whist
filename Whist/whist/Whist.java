@@ -1,4 +1,4 @@
-package WhistGame;
+
 /* Whist.java 
  * Has been modified - Project Team 24
  */
@@ -281,15 +281,15 @@ public class Whist extends CardGame {
 		removeActor(trumpsActor);
 		return Optional.empty();
 	}
-	
+
 	/* code responsible for instantiating players based on property file */
-	private void declarePlayers(Properties properties) throws PlayerStrategyException{
-		
+	private void declarePlayers(Properties properties) throws PlayerStrategyException {
+
 		IGameStrategy randomStrategy = GameStrategyFactory.getInstance().getRandomStrategy(random);
 		IGameStrategy legalStrategy = GameStrategyFactory.getInstance().getLegalStrategy(random);
 		IGameStrategy smartStrategy = GameStrategyFactory.getInstance().getSmartStrategy();
 		IGameStrategy interactiveStrategy = GameStrategyFactory.getInstance().getInteractiveStrategy();
-		
+
 		for (int i = 0; i < players.length; i++) {
 			String player = "player" + i;
 			String strategy = properties.getProperty(player);
@@ -306,37 +306,38 @@ public class Whist extends CardGame {
 			}
 		}
 	}
-	
+
 	/* code responsible for configuring game rules set by property file */
-	private void declareGameRules(Properties properties) throws WinningScoreException, AmountCardException{
+	private void declareGameRules(Properties properties) throws WinningScoreException, AmountCardException {
 		nbStartCards = Integer.parseInt(properties.getProperty("nbStartCards"));
-		
+
 		// cards given to each player must be between 1 to 13
 		if (nbStartCards <= 0 || nbStartCards > 13) {
 			throw new AmountCardException();
 		}
-		
+
 		winningScore = Integer.parseInt(properties.getProperty("winningScore"));
-		
-		// doesn't make sense if winning score is below 1 (game will repeat forever if below 1)
+
+		// doesn't make sense if winning score is below 1 (game will repeat forever if
+		// below 1)
 		if (winningScore < 1) {
 			throw new WinningScoreException();
 		}
-		
+
 		enforceRules = Boolean.parseBoolean(properties.getProperty("enforceRules"));
 	}
 
 	public Whist(Properties properties) throws PlayerStrategyException, WinningScoreException, AmountCardException {
 
 		super(700, 700, 30);
-		
+
 		long seedProp = Long.parseLong(properties.getProperty("Seed"));
 		random = new Random(seedProp);
-		
+
 		declareGameRules(properties);
-		
+
 		declarePlayers(properties);
-		
+
 		// add subscribers to subject
 		for (int i = 0; i < nbPlayers; i++) {
 			gameUpdater.addGameListeners(players[i]);
@@ -355,14 +356,15 @@ public class Whist extends CardGame {
 		refresh();
 	}
 
-	public static void main(String[] args) throws IOException, PlayerStrategyException, WinningScoreException, AmountCardException {
+	public static void main(String[] args)
+			throws IOException, PlayerStrategyException, WinningScoreException, AmountCardException {
 
 		Properties whistProperties = new Properties();
 
 		// Read properties
 		FileReader inStream = null;
 		try {
-			inStream = new FileReader("whist.properties");
+			inStream = new FileReader("template.properties");
 			whistProperties.load(inStream);
 		} finally {
 			if (inStream != null) {

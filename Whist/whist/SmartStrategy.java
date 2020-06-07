@@ -1,17 +1,17 @@
-package WhistGame;
+
 /* Strategy entails picking a card based on circumstances
  * 
  * Made by - Project Team 24 */
 import java.util.ArrayList;
 
-import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 
 public class SmartStrategy implements IGameStrategy {
 
 	@Override
-	public Card playTrick(Player player, Suit lead) {
-		// if no leading card has been determined, find one, if one has, find a follow up card
+	public Card playTrick(Player player, Whist.Suit lead) {
+		// if no leading card has been determined, find one, if one has, find a follow
+		// up card
 		if (lead == null) {
 			return determineLeadingCard(player);
 		} else {
@@ -38,7 +38,7 @@ public class SmartStrategy implements IGameStrategy {
 	// if not, return lowest trump suit card
 	private Card findLowCard(Player player) {
 		ArrayList<Card> currentHand = player.getHand().getCardList();
-		Suit currentTrump = player.getTrump();
+		Whist.Suit currentTrump = player.getTrump();
 		Card trumpCard = null, leastRankCard = null;
 
 		// a very bad implementation of finding the least rank cards
@@ -81,7 +81,7 @@ public class SmartStrategy implements IGameStrategy {
 	}
 
 	// will find the best follow up card to place
-	private Card determineFollowCard(Player player, Suit lead) {
+	private Card determineFollowCard(Player player, Whist.Suit lead) {
 		if (player.getHand().getNumberOfCardsWithSuit(lead) != 0) {
 			return counterFind(player, lead);
 		} else {
@@ -94,7 +94,7 @@ public class SmartStrategy implements IGameStrategy {
 	 * trumps it, but not by a lot) and is of the same suit. If can't find, return
 	 * lowest ranking card with the lead suit
 	 */
-	private Card counterFind(Player player, Suit lead) {
+	private Card counterFind(Player player, Whist.Suit lead) {
 		ArrayList<Card> currentHand = player.getHand().getCardsWithSuit(lead);
 		Card leadingCard = player.getWinningCard();
 		Card higherCard = null, lowestCard = null;
@@ -132,9 +132,9 @@ public class SmartStrategy implements IGameStrategy {
 
 	// will attempt to return lowest trump suit card. If not, will return lowest
 	// ranked card of any suit
-	private Card returnOtherCards(Player player, Suit lead) {
+	private Card returnOtherCards(Player player, Whist.Suit lead) {
 		ArrayList<Card> currentHand = player.getHand().getCardList();
-		Suit trump = player.getTrump();
+		Whist.Suit trump = player.getTrump();
 		Card trumpCard = null, otherCard = null;
 
 		for (Card card : currentHand) {

@@ -1,11 +1,10 @@
-package WhistGame;
+
 /* Strategy entails picking a random card that abides by the rules of Whist 
  * 
  * Made by - Project Team 24 */
 import java.util.ArrayList;
 import java.util.Random;
 
-import WhistGame.Whist.Suit;
 import ch.aplu.jcardgame.Card;
 import ch.aplu.jcardgame.Hand;
 
@@ -18,14 +17,14 @@ public class LegalStrategy implements IGameStrategy {
 	}
 
 	@Override
-	public Card playTrick(Player player, Suit lead) {
-		
+	public Card playTrick(Player player, Whist.Suit lead) {
+
 		// if a leading card hasn't been placed, get any random card
 		if (lead == null) {
 			return randomCard(player.getHand());
 		} else {
 			ArrayList<Card> leadCards = player.getHand().getCardsWithSuit(lead);
-			
+
 			// attempt to return cards that follow lead suit, else return any card
 			if (leadCards.isEmpty()) {
 				return randomCard(player.getHand());
